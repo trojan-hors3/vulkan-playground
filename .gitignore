@@ -33,3 +33,4 @@
 
 # Assembly
 Vulkan_Playground
+src/shaders/*.spv

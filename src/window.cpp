@@ -1,5 +1,7 @@
 #include "window.h"
 
+#include <stdexcept>
+
 namespace VulkanPlayground
 {
 	Window::Window(int width, int height, std::string windowName)
@@ -21,5 +23,13 @@ namespace VulkanPlayground
 		glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
 
 		window = glfwCreateWindow(m_width, m_height, m_windowName.c_str(), nullptr, nullptr);
+	}
+
+	void Window::createWindowSurface(VkInstance instance, VkSurfaceKHR* surface)
+	{
+		if (glfwCreateWindowSurface(instance, window, nullptr, surface) != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to create window surface");
+		}
 	}
 }

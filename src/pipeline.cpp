@@ -6,10 +6,12 @@
 
 namespace VulkanPlayground
 {
-	Pipeline::Pipeline(const std::string& vertFilepath,
-                 	   const std::string& fragFilepath)
+	Pipeline::Pipeline(Device& device, 
+		     	   const std::string& vertFilepath, 
+			   const std::string& fragFilepath,
+			   const PipelineConfigInfo& configInfo) : _device{device}
 	{
-		createGraphicsPipeline(vertFilepath, fragFilepath);
+		createGraphicsPipeline(vertFilepath, fragFilepath, configInfo);
 	}
 
 	std::vector<char> Pipeline::readFile(const std::string& filepath)
@@ -32,12 +34,33 @@ namespace VulkanPlayground
 	}
 
 	void Pipeline::createGraphicsPipeline(const std::string& vertFilepath,
-                                              const std::string& fragFilepath)
+                                              const std::string& fragFilepath,
+					      const PipelineConfigInfo& configInfo)
 	{
 		auto vertCode = readFile(vertFilepath);
 		auto fragCode = readFile(fragFilepath);
 
 		std::cout << "Vertex Shader Code Size: " << vertCode.size() << "\n";
 		std::cout << "Fragment Shader Code Size: " << fragCode.size() << "\n";
+	}
+
+	void Pipeline::createShaderModule(const std::vector<char>& code, VkShaderModule* shaderModule)
+	{
+		VkShaderModuleCreateInfo createInfo {};
+		createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+		createInfo.codeSize = code.size();
+		createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
+		
+		if (vkCreateShaderModule(_device.device(), &createInfo, nullptr, shaderModule) != VK_SUCCESS)
+		{
+			throw std::runtime_error("Failed to create shader module");
+		}
+	}
+
+	PipelineConfigInfo Pipeline::defaultPipelineConfigInfo(uint32_t width, uint32_t height)
+	{
+		PipelineConfigInfo configInfo {};
+
+		return configInfo;
 	}
 }

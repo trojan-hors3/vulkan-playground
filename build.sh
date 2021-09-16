@@ -7,6 +7,13 @@ includeFlags="-I./src"
 linkerFlags="-lglfw -lvulkan -ldl -lpthread -lX11 -lXrandr"
 defines=""
 
+function buildShaders()
+{
+	echo "Building Shaders"
+
+	./src/shaders/compile_shaders.sh
+}
+
 function buildAssembly()
 {
 	echo "Building $assembly"
@@ -14,4 +21,11 @@ function buildAssembly()
 	g++ $cppFilenames $compilerFlags $defines $includeFlags $linkerFlags -o $assembly
 }
 
-buildAssembly
+function runAssembly()
+{
+	echo "Running $assembly"
+
+	./"$assembly"
+}
+
+buildShaders && buildAssembly && runAssembly
